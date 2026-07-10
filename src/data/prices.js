@@ -266,15 +266,23 @@ export const priceGroups = [
   },
 ]
 
-// Список услуг для выпадающего меню в форме записи
-export const bookingOptions = [
-  'Лазерная эпиляция',
-  'Перманентный макияж',
-  'Удаление перманента / татуировки',
-  'Микроигольчатый лифтинг',
-  'Наращивание ресниц',
-  'Ламинирование ресниц и бровей',
-  'Педикюр',
-  'Маникюр',
-  'Эндосфера массаж',
-]
+// Плоский список услуг внутри направления — для формы записи (направление → услуга → цена)
+export function getCategoryServices(catId) {
+  const out = []
+  priceGroups
+    .filter((g) => g.cat === catId)
+    .forEach((g) => {
+      g.sections.forEach((sec) => {
+        const ctx = g.subtitle || sec.h || ''
+        sec.items.forEach((it) => {
+          out.push({
+            name: it.n,
+            context: ctx,
+            price: it.p,
+            label: ctx ? `${ctx} · ${it.n}` : it.n,
+          })
+        })
+      })
+    })
+  return out
+}

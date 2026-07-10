@@ -1,11 +1,24 @@
 import { useState } from 'react'
-import { bookingOptions } from '../data/prices'
+import { priceCategories, getCategoryServices } from '../data/prices'
 import { SHEETS_URL } from '../config'
+
+function priceText(p) {
+  if (!p || p === '—') return 'по осмотру'
+  if (p === 'по запросу') return 'по запросу'
+  return `${p} сум`
+}
 
 function Contact() {
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState(false)
+
+  const [cat, setCat] = useState('')
+  const [serviceIdx, setServiceIdx] = useState('')
+
+  const catServices = cat ? getCategoryServices(cat) : []
+  const catLabel = priceCategories.find((c) => c.id === cat)?.label || ''
+  const selected = serviceIdx !== '' ? catServices[Number(serviceIdx)] : null
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -33,7 +46,7 @@ function Contact() {
           <span className="section__eyebrow">Запись</span>
           <h2 className="section__title">Оставьте заявку</h2>
           <p className="section__sub">
-            Заполните форму — мы&nbsp;свяжемся с&nbsp;вами и&nbsp;подберём удобное время.
+            Заполните форму — мы&nbsp;свяжемся с&nbsp;вами и&nbsp;подтвердим время.
           </p>
         </div>
 
@@ -44,7 +57,7 @@ function Contact() {
                 <span className="contact__check">✓</span>
                 <h3>Спасибо!</h3>
                 <p>
-                  Заявка принята. Мы&nbsp;свяжемся с&nbsp;вами в&nbsp;ближайшее время.
+                  Заявка принята. Мы&nbsp;свяжемся с&nbsp;вами и&nbsp;подтвердим запись.
                 </p>
                 <button
                   type="button"
@@ -57,6 +70,12 @@ function Contact() {
             ) : (
               <>
                 <h3 className="contact__form-title">Онлайн-запись</h3>
+
+                {/* Скрытые поля с человекочитаемыми значениями для таблицы */}
+                <input type="hidden" name="direction" value={catLabel} />
+                <input type="hidden" name="service" value={selected ? selected.label : ''} />
+                <input type="hidden" name="price" value={selected ? selected.price : ''} />
+
                 <label className="field">
                   <span>Ваше имя</span>
                   <input name="name" type="text" placeholder="Как к вам обращаться?" required />
@@ -65,19 +84,55 @@ function Contact() {
                   <span>Телефон</span>
                   <input name="phone" type="tel" placeholder="+998 __ ___ __ __" required />
                 </label>
+
                 <label className="field">
-                  <span>Услуга</span>
-                  <select name="service" defaultValue="">
+                  <span>Направление</span>
+                  <select
+                    value={cat}
+                    onChange={(e) => {
+                      setCat(e.target.value)
+                      setServiceIdx('')
+                    }}
+                    required
+                  >
                     <option value="" disabled>
-                      Выберите услугу
+                      Выберите направление
                     </option>
-                    {bookingOptions.map((s) => (
-                      <option key={s} value={s}>
-                        {s}
+                    {priceCategories.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.label}
                       </option>
                     ))}
                   </select>
                 </label>
+
+                {cat && (
+                  <label className="field">
+                    <span>Услуга</span>
+                    <select
+                      value={serviceIdx}
+                      onChange={(e) => setServiceIdx(e.target.value)}
+                      required
+                    >
+                      <option value="" disabled>
+                        Выберите услугу
+                      </option>
+                      {catServices.map((s, i) => (
+                        <option key={i} value={i}>
+                          {s.label} — {priceText(s.price)}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                )}
+
+                {selected && (
+                  <div className="price-preview">
+                    <span>Стоимость</span>
+                    <strong>{priceText(selected.price)}</strong>
+                  </div>
+                )}
+
                 <div className="field-row">
                   <label className="field">
                     <span>Дата записи</span>
@@ -88,10 +143,12 @@ function Contact() {
                     <input name="time" type="time" required />
                   </label>
                 </div>
+
                 <label className="field">
                   <span>Комментарий</span>
                   <textarea name="comment" rows="3" placeholder="Пожелания…" />
                 </label>
+
                 {error && (
                   <p className="contact__error">
                     Не&nbsp;удалось отправить. Позвоните нам или напишите в&nbsp;Instagram.

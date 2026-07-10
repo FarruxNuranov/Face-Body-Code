@@ -882,6 +882,30 @@
   gap: 14px;
 }
 
+.price-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  margin-bottom: 18px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--cream), var(--blush));
+  border: 1px solid rgba(201, 141, 134, 0.3);
+}
+
+.price-preview span {
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.price-preview strong {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--rose-deep);
+}
+
 .field span {
   display: block;
   font-size: 0.82rem;
