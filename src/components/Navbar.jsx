@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import logo from '../assets/logo.png'
 
 const links = [
   { href: '#services', label: 'Услуги' },
@@ -23,7 +24,7 @@ function Navbar() {
     <header className={`nav ${scrolled ? 'nav--scrolled' : ''}`}>
       <div className="nav__inner">
         <a href="#top" className="logo" onClick={() => setOpen(false)}>
-          <span className="logo__mark">FBC</span>
+          <img className="logo__img" src={logo} alt="Face &amp; Body Code" />
           <span className="logo__text">
             Face Body Code<span className="logo__sub">beauty &amp; aesthetics</span>
           </span>

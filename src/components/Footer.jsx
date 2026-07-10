@@ -1,3 +1,5 @@
+import logo from '../assets/logo.png'
+
 function Footer() {
   const year = 2026 // TODO: заменить на new Date().getFullYear() при желании
 
@@ -6,7 +8,7 @@ function Footer() {
       <div className="container footer__inner">
         <div className="footer__brand">
           <a href="#top" className="logo logo--light">
-            <span className="logo__mark">FBC</span>
+            <img className="logo__img" src={logo} alt="Face &amp; Body Code" />
             <span className="logo__text">
               Face Body Code<span className="logo__sub">beauty &amp; aesthetics</span>
             </span>
