@@ -1,15 +1,17 @@
 /**
- * Google Apps Script — приём заявок с сайта Face Body Code в Google Sheets.
+ * Google Apps Script — приём заявок с сайта Face Body Code в Google Sheets
+ * + красивое оформление таблицы.
  *
  * Колонки: Дата заявки | Имя | Телефон | Направление | Услуга | Цена |
  *          Дата записи | Время | Комментарий | Статус
- * Статус — выпадающий список: Новая / Подтверждено / Отказ (по умолчанию «Новая»).
+ * Статус — выпадающий список: Новая / Подтверждено / Отказ, с цветами.
  *
- * ОБНОВЛЕНИЕ СКРИПТА (если уже был развёрнут):
- * 1. Замени код на этот, сохрани (Ctrl+S)
- * 2. Начать развёртывание → Управлять развёртываниями → ✏️ (изменить)
- *    → Версия: «Новая версия» → Развернуть  (URL останется прежним)
- * 3. В таблице удали лист «Заявки» — новые заголовки создадутся при первой заявке.
+ * ПОСЛЕ ВСТАВКИ КОДА:
+ * 1. Ctrl+S (сохранить)
+ * 2. Чтобы сразу оформить текущую таблицу — Выполнить → выбери «formatNow» → Выполнить
+ * 3. Чтобы новые заявки тоже оформлялись — переразверни:
+ *    Начать развёртывание → Управлять развёртываниями → ✏️ → Версия «Новая версия» → Развернуть
+ *    (редактируй существующее развёртывание — URL не изменится)
  */
 
 var HEADERS = [
@@ -25,6 +27,8 @@ var HEADERS = [
   'Статус',
 ];
 
+var WIDTHS = [155, 150, 130, 155, 250, 95, 120, 80, 240, 130];
+
 function doPost(e) {
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -32,7 +36,6 @@ function doPost(e) {
 
     if (sheet.getLastRow() === 0) {
       sheet.appendRow(HEADERS);
-      sheet.getRange(1, 1, 1, HEADERS.length).setFontWeight('bold');
     }
 
     var p = e.parameter;
@@ -49,13 +52,7 @@ function doPost(e) {
       'Новая',             // Статус
     ]);
 
-    // Выпадающий список для колонки «Статус» в новой строке
-    var row = sheet.getLastRow();
-    var rule = SpreadsheetApp.newDataValidation()
-      .requireValueInList(['Новая', 'Подтверждено', 'Отказ'], true)
-      .setAllowInvalid(false)
-      .build();
-    sheet.getRange(row, HEADERS.length).setDataValidation(rule);
+    formatSheet(sheet);
 
     return ContentService
       .createTextOutput(JSON.stringify({ ok: true }))
@@ -64,5 +61,66 @@ function doPost(e) {
     return ContentService
       .createTextOutput(JSON.stringify({ ok: false, error: String(err) }))
       .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// Запусти вручную (Выполнить), чтобы оформить уже существующую таблицу
+function formatNow() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Заявки');
+  if (sheet) formatSheet(sheet);
+}
+
+function formatSheet(sheet) {
+  var numCols = HEADERS.length;
+  var lastRow = sheet.getLastRow();
+
+  // Ширины колонок
+  for (var c = 0; c < numCols; c++) {
+    sheet.setColumnWidth(c + 1, WIDTHS[c]);
+  }
+
+  // Заголовок
+  sheet.getRange(1, 1, 1, numCols)
+    .setBackground('#2a221f')
+    .setFontColor('#ffffff')
+    .setFontWeight('bold')
+    .setHorizontalAlignment('center')
+    .setVerticalAlignment('middle');
+  sheet.setRowHeight(1, 38);
+  sheet.setFrozenRows(1);
+
+  if (lastRow >= 2) {
+    var data = sheet.getRange(2, 1, lastRow - 1, numCols);
+    data.setVerticalAlignment('middle').setWrap(true).setFontColor('#3e332e');
+
+    // Чересполосица (сначала убираем старую, чтобы не дублировалась)
+    var bandings = sheet.getBandings();
+    for (var i = 0; i < bandings.length; i++) bandings[i].remove();
+    data.applyRowBanding(SpreadsheetApp.BandingTheme.LIGHT_GREY, false, false);
+
+    // Валидация + цвета для колонки «Статус»
+    var statusRange = sheet.getRange(2, numCols, lastRow - 1, 1);
+    var rule = SpreadsheetApp.newDataValidation()
+      .requireValueInList(['Новая', 'Подтверждено', 'Отказ'], true)
+      .setAllowInvalid(false)
+      .build();
+    statusRange.setDataValidation(rule);
+    statusRange.setHorizontalAlignment('center').setFontWeight('bold');
+
+    var rules = [
+      SpreadsheetApp.newConditionalFormatRule()
+        .whenTextEqualTo('Подтверждено')
+        .setBackground('#d9ead3').setFontColor('#274e13')
+        .setRanges([statusRange]).build(),
+      SpreadsheetApp.newConditionalFormatRule()
+        .whenTextEqualTo('Отказ')
+        .setBackground('#f4cccc').setFontColor('#990000')
+        .setRanges([statusRange]).build(),
+      SpreadsheetApp.newConditionalFormatRule()
+        .whenTextEqualTo('Новая')
+        .setBackground('#fff2cc').setFontColor('#7f6000')
+        .setRanges([statusRange]).build(),
+    ];
+    sheet.setConditionalFormatRules(rules);
   }
 }
