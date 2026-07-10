@@ -1,0 +1,20 @@
+# Настройки деплоя Face Body Code на Netlify
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# SPA-фолбэк: любые пути отдают index.html (на случай прямых ссылок)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Кэш статики Vite (файлы с хэшем в имени — можно кэшировать надолго)
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
