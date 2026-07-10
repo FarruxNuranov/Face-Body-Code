@@ -1,12 +1,12 @@
-// ⚠️ Шаблонные данные — замените на реальные (имена, фото, соцсети, стаж)
+// ⚠️ Шаблонные данные — замените на реальные (соцсети). Фото — настоящие.
 import elnoraPhoto from '../assets/elnora.jpg'
+import anastasiaPhoto from '../assets/anastasia.jpg'
 
 export const specialists = [
   {
     id: 'elnora',
     name: 'Эльнора',
     role: 'Эстетист-косметолог',
-    experience: '8 лет опыта',
     photo: elnoraPhoto,
     tagline: 'Аппаратная косметология и перманентный макияж',
     services: [
@@ -22,9 +22,7 @@ export const specialists = [
     id: 'anastasia',
     name: 'Анастасия',
     role: 'Мастер ногтевого сервиса и lash-мастер',
-    experience: '6 лет опыта',
-    photo:
-      'https://images.unsplash.com/photo-1595959183082-7b570b7e08e2?auto=format&fit=crop&w=800&q=80',
+    photo: anastasiaPhoto,
     tagline: 'Маникюр, ресницы и уходовые процедуры',
     services: [
       'Маникюр',

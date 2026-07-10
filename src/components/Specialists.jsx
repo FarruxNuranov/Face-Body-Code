@@ -17,7 +17,6 @@ function Specialists() {
             <article key={m.id} className="master">
               <div className="master__photo">
                 <img src={m.photo} alt={m.name} loading="lazy" />
-                <span className="master__exp">{m.experience}</span>
               </div>
               <div className="master__info">
                 <h3 className="master__name">{m.name}</h3>
