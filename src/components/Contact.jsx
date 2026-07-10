@@ -186,7 +186,7 @@ function Contact() {
                 <span className="contact__ico">◷</span>
                 <div>
                   <b>Часы работы</b>
-                  <p>Ежедневно 09:00 – 21:00</p>
+                  <p>Ежедневно 10:00 – 22:00</p>
                 </div>
               </li>
               <li>

@@ -25,21 +25,6 @@ function Hero() {
             Как добраться
           </a>
         </div>
-
-        <div className="hero__stats">
-          <div className="stat">
-            <span className="stat__num">14+</span>
-            <span className="stat__label">лет опыта в&nbsp;сумме</span>
-          </div>
-          <div className="stat">
-            <span className="stat__num">2000+</span>
-            <span className="stat__label">довольных клиентов</span>
-          </div>
-          <div className="stat">
-            <span className="stat__num">9</span>
-            <span className="stat__label">видов услуг</span>
-          </div>
-        </div>
       </div>
 
       <a href="#services" className="hero__scroll" aria-label="Прокрутить вниз">
