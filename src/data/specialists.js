@@ -1,4 +1,5 @@
 // ⚠️ Шаблонные данные — замените на реальные (имена, фото, соцсети, стаж)
+import elnoraPhoto from '../assets/elnora.jpg'
 
 export const specialists = [
   {
@@ -6,8 +7,7 @@ export const specialists = [
     name: 'Эльнора',
     role: 'Эстетист-косметолог',
     experience: '8 лет опыта',
-    photo:
-      'https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?auto=format&fit=crop&w=800&q=80',
+    photo: elnoraPhoto,
     tagline: 'Аппаратная косметология и перманентный макияж',
     services: [
       'Лазерная эпиляция',
