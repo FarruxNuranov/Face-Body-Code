@@ -876,6 +876,12 @@
   margin-bottom: 18px;
 }
 
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
 .field span {
   display: block;
   font-size: 0.82rem;

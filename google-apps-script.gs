@@ -1,17 +1,27 @@
 /**
  * Google Apps Script — приём заявок с сайта Face Body Code в Google Sheets.
  *
- * УСТАНОВКА:
- * 1. Создай Google-таблицу (sheets.new)
- * 2. Расширения → Apps Script
- * 3. Удали код по умолчанию, вставь этот, сохрани (Ctrl+S)
- * 4. Развернуть → Новое развёртывание → тип «Веб-приложение»
- *      - Запуск от имени: «Я»
- *      - У кого есть доступ: «Все»
- * 5. Разверни, подтверди доступ (Authorize)
- * 6. Скопируй URL веб-приложения (заканчивается на /exec)
- * 7. Вставь этот URL в src/config.js → SHEETS_URL
+ * Колонки: Дата заявки | Имя | Телефон | Услуга | Дата записи | Время | Комментарий | Статус
+ * Статус — выпадающий список: Новая / Подтверждено / Отказ (по умолчанию «Новая»).
+ *
+ * ОБНОВЛЕНИЕ СКРИПТА (если уже был развёрнут):
+ * 1. Замени код на этот, сохрани (Ctrl+S)
+ * 2. Начать развёртывание → Управлять развёртываниями → ✏️ (изменить)
+ *    → Версия: «Новая версия» → Развернуть  (URL останется прежним)
+ * 3. В таблице очисти старый лист «Заявки» (или удали его) — новые заголовки
+ *    создадутся автоматически при первой заявке.
  */
+
+var HEADERS = [
+  'Дата заявки',
+  'Имя',
+  'Телефон',
+  'Услуга',
+  'Дата записи',
+  'Время',
+  'Комментарий',
+  'Статус',
+];
 
 function doPost(e) {
   try {
@@ -20,17 +30,29 @@ function doPost(e) {
 
     // Заголовки при первом запуске
     if (sheet.getLastRow() === 0) {
-      sheet.appendRow(['Дата', 'Имя', 'Телефон', 'Услуга', 'Комментарий']);
+      sheet.appendRow(HEADERS);
+      sheet.getRange(1, 1, 1, HEADERS.length).setFontWeight('bold');
     }
 
     var p = e.parameter;
     sheet.appendRow([
-      new Date(),
-      p.name || '',
-      p.phone || '',
-      p.service || '',
-      p.comment || '',
+      new Date(),        // Дата заявки
+      p.name || '',      // Имя
+      p.phone || '',     // Телефон
+      p.service || '',   // Услуга
+      p.date || '',      // Дата записи
+      p.time || '',      // Время
+      p.comment || '',   // Комментарий
+      'Новая',           // Статус
     ]);
+
+    // Выпадающий список для колонки «Статус» в новой строке
+    var row = sheet.getLastRow();
+    var rule = SpreadsheetApp.newDataValidation()
+      .requireValueInList(['Новая', 'Подтверждено', 'Отказ'], true)
+      .setAllowInvalid(false)
+      .build();
+    sheet.getRange(row, HEADERS.length).setDataValidation(rule);
 
     return ContentService
       .createTextOutput(JSON.stringify({ ok: true }))

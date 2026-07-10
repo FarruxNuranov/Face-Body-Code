@@ -78,9 +78,19 @@ function Contact() {
                     ))}
                   </select>
                 </label>
+                <div className="field-row">
+                  <label className="field">
+                    <span>Дата записи</span>
+                    <input name="date" type="date" required />
+                  </label>
+                  <label className="field">
+                    <span>Время</span>
+                    <input name="time" type="time" required />
+                  </label>
+                </div>
                 <label className="field">
                   <span>Комментарий</span>
-                  <textarea name="comment" rows="3" placeholder="Удобное время, пожелания…" />
+                  <textarea name="comment" rows="3" placeholder="Пожелания…" />
                 </label>
                 {error && (
                   <p className="contact__error">
