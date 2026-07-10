@@ -805,7 +805,7 @@
 
 .contact__inner {
   display: grid;
-  grid-template-columns: 1fr 1.05fr;
+  grid-template-columns: 1.05fr 1fr;
   gap: 60px;
   align-items: center;
 }
@@ -942,11 +942,19 @@
 }
 
 .contact__map {
+  margin-top: 40px;
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow);
   border: 6px solid #fff;
   line-height: 0;
+}
+
+.contact__error {
+  color: #b3746e;
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+  text-align: center;
 }
 
 .contact__map iframe {
