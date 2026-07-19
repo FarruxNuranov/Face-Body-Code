@@ -4,6 +4,7 @@ import logo from '../assets/logo.png'
 const links = [
   { href: '#services', label: 'Услуги' },
   { href: '#masters', label: 'Мастера' },
+  { href: '#certificates', label: 'Сертификаты' },
   { href: '#gallery', label: 'Галерея' },
   { href: '#about', label: 'О студии' },
   { href: '#contact', label: 'Контакты' },
